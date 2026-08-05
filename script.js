@@ -169,10 +169,11 @@ canvas.addEventListener(
 
 });
 
-canvas.addEventListener("touchstart",()=>{
+canvas.addEventListener("touchstart",(e)=>{
 
-    if(!drawing)
-        return;
+    e.preventDefault();
+
+    if(!drawing) return;
 
     mouseDown = true;
 
@@ -198,8 +199,11 @@ canvas.addEventListener(
     let rect=canvas.getBoundingClientRect();
 
 
-    let x=e.clientX-rect.left;
-    let y=e.clientY-rect.top;
+    let scaleX = canvas.width / rect.width;
+    let scaleY = canvas.height / rect.height;
+
+    let x = (e.clientX - rect.left) * scaleX;
+    let y = (e.clientY - rect.top) * scaleY;
 
     if(erasing){
 
@@ -245,13 +249,15 @@ canvas.addEventListener("touchmove",(e)=>{
 
     if(!mouseDown) return;
 
-    let rect = joystick.getBoundingClientRect();
+    let rect = canvas.getBoundingClientRect();
 
 let touch = e.touches[0];
 
-let x = touch.clientX - rect.left;
+let scaleX = canvas.width / rect.width;
+let scaleY = canvas.height / rect.height;
 
-let y = touch.clientY - rect.top;
+let x = (touch.clientX - rect.left) * scaleX;
+let y = (touch.clientY - rect.top) * scaleY;
 
     if(erasing){
 
@@ -408,42 +414,52 @@ joystick.addEventListener("touchmove",(e)=>{
 
     e.preventDefault();
 
-    let rect = canvas.getBoundingClientRect();
+    let rect = joystick.getBoundingClientRect();
 
     let touch = e.touches[0];
 
-    let scaleX = canvas.width / rect.width;
-    let scaleY = canvas.height / rect.height;
+    let x = touch.clientX - rect.left;
 
-    let x = (touch.clientX - rect.left) * scaleX;
-    let y = (touch.clientY - rect.top) * scaleY;
+    let y = touch.clientY - rect.top;
 
-   let dx = x - 70;
+    let dx = x - 70;
 
-let dy = y - 70;
+    let dy = y - 70;
 
-let distance = Math.sqrt(dx * dx + dy * dy);
+    let distance = Math.sqrt(dx * dx + dy * dy);
 
-let maxDistance = 45;
+    let maxDistance = 45;
 
-if(distance > maxDistance){
+    if(distance > maxDistance){
 
-    dx = dx / distance * maxDistance;
+        dx = dx / distance * maxDistance;
 
-    dy = dy / distance * maxDistance;
+        dy = dy / distance * maxDistance;
 
-}
+    }
 
-joystickX = dx / maxDistance;
+    joystickX = dx / maxDistance;
 
-joystickY = dy / maxDistance;
+    joystickY = dy / maxDistance;
 
-stick.style.left = (dx + 45) + "px";
+    stick.style.left = (dx + 45) + "px";
 
-stick.style.top = (dy + 45) + "px";
+    stick.style.top = (dy + 45) + "px";
+
+});
+document.addEventListener("touchend",()=>{
+
+    joystickX = 0;
+
+    joystickY = 0;
+
+    stick.style.left = "45px";
+
+    stick.style.top = "45px";
+
 });
 
-joystick.addEventListener("touchend",()=>{
+document.addEventListener("touchcancel",()=>{
 
     joystickX = 0;
 
