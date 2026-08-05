@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Dragon</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="ui">
+
+    <h1>🐉 Maze Dragon</h1>
+
+   <div id="toolbar">
+
+    <button id="drawBtn">Draw Maze</button>
+
+    <button id="eraseBtn">Eraser</button>
+
+    <button id="finishBtn">
+        Finish Drawing
+    </button>
+
+    <button id="restartBtn">
+        Restart
+    </button>
+
+</div>
+
+    <div id="stats">
+
+        <span>Time:
+            <span id="timer">0.0</span>s
+        </span>
+
+        <span id="message">
+            Draw your maze!
+        </span>
+
+    </div>
+
+</div>
+
+
+<div id="gameContainer">
+
+<canvas id="gameCanvas" width="900" height="550"></canvas>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
