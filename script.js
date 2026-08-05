@@ -12,6 +12,38 @@ const eraseBtn = document.getElementById("eraseBtn");
 
 const timerText = document.getElementById("timer");
 const message = document.getElementById("message");
+const deviceScreen =
+document.getElementById("deviceScreen");
+
+const computerBtn =
+document.getElementById("computerBtn");
+
+const mobileBtn =
+document.getElementById("mobileBtn");
+
+const joystick =
+document.getElementById("joystick");
+
+const stick =
+document.getElementById("stick");
+
+computerBtn.onclick = () => {
+
+    mobileMode = false;
+
+    deviceScreen.style.display = "none";
+
+};
+
+mobileBtn.onclick = () => {
+
+    mobileMode = true;
+
+    deviceScreen.style.display = "none";
+
+    joystick.style.display = "block";
+
+};
 
 
 // Game states
@@ -20,6 +52,11 @@ let drawing = true;
 let erasing = false;
 let gameStarted = false;
 let gameWon = false;
+let mobileMode = false;
+
+let joystickX = 0;
+
+let joystickY = 0;
 
 
 // Maze storage
@@ -132,6 +169,14 @@ canvas.addEventListener(
 
 });
 
+canvas.addEventListener("touchstart",()=>{
+
+    if(!drawing)
+        return;
+
+    mouseDown = true;
+
+});
 
 canvas.addEventListener(
 "mouseup",
@@ -156,38 +201,25 @@ canvas.addEventListener(
     let x=e.clientX-rect.left;
     let y=e.clientY-rect.top;
 
-
-    canvas.addEventListener(
-"mousemove",
-(e)=>{
-
-    if(!drawing)return;
-    if(!mouseDown)return;
-
-
-    let rect=canvas.getBoundingClientRect();
-
-
-    let x=e.clientX-rect.left;
-    let y=e.clientY-rect.top;
-
-
     if(erasing){
 
-        walls = walls.filter(w => {
+        walls = walls.filter(w=>{
 
             return !(
-                x > w.x &&
-                x < w.x+w.width &&
-                y > w.y &&
-                y < w.y+w.height
+
+                x > w.x-20 &&
+
+                x < w.x+w.width+20 &&
+
+                y > w.y-20 &&
+
+                y < w.y+w.height+20
+
             );
 
         });
 
-    }
-
-    else{
+    } else {
 
         walls.push({
 
@@ -200,17 +232,71 @@ canvas.addEventListener(
 
     }
 
-
     clearCanvas();
 
 });
 
 
+canvas.addEventListener("touchmove",(e)=>{
+
+    e.preventDefault();
+
+    if(!drawing) return;
+
+    if(!mouseDown) return;
+
+    let rect = canvas.getBoundingClientRect();
+
+    let touch = e.touches[0];
+
+    let x = touch.clientX - rect.left;
+
+    let y = touch.clientY - rect.top;
+
+    if(erasing){
+
+        walls = walls.filter(w=>{
+
+            return !(
+
+                x > w.x-25 &&
+
+                x < w.x+w.width+25 &&
+
+                y > w.y-25 &&
+
+                y < w.y+w.height+25
+
+            );
+
+        });
+
+    }
+    else{
+
+        walls.push({
+
+            x:x-10,
+
+            y:y-10,
+
+            width:20,
+
+            height:20
+
+        });
+
+    }
+
     clearCanvas();
 
 });
 
+canvas.addEventListener("touchend",()=>{
 
+    mouseDown = false;
+
+});
 
 // ===============================
 // Buttons
@@ -318,7 +404,58 @@ window.addEventListener(
 
 });
 
+joystick.addEventListener("touchmove",(e)=>{
 
+    e.preventDefault();
+
+    let rect =
+    joystick.getBoundingClientRect();
+
+    let touch =
+    e.touches[0];
+
+    let x =
+    touch.clientX - rect.left;
+
+    let y =
+    touch.clientY - rect.top;
+
+   let dx = x - 70;
+
+let dy = y - 70;
+
+let distance = Math.sqrt(dx * dx + dy * dy);
+
+let maxDistance = 45;
+
+if(distance > maxDistance){
+
+    dx = dx / distance * maxDistance;
+
+    dy = dy / distance * maxDistance;
+
+}
+
+joystickX = dx / maxDistance;
+
+joystickY = dy / maxDistance;
+
+stick.style.left = (dx + 45) + "px";
+
+stick.style.top = (dy + 45) + "px";
+});
+
+joystick.addEventListener("touchend",()=>{
+
+    joystickX = 0;
+
+    joystickY = 0;
+
+    stick.style.left = "45px";
+
+    stick.style.top = "45px";
+
+});
 
 // ===============================
 // Game Loop
@@ -552,7 +689,7 @@ function moveDragon(){
     let oldX=dragon.x;
     let oldY=dragon.y;
 
-
+    if(!mobileMode){
     if(keys["ArrowUp"] || keys["w"]){
 
         dragon.y-=dragon.speed;
@@ -576,9 +713,32 @@ function moveDragon(){
         dragon.x+=dragon.speed;
 
     }
+}
 
 
+    if(mobileMode){
 
+    let length = Math.sqrt(
+
+        joystickX*joystickX +
+
+        joystickY*joystickY
+
+    );
+
+    if(length > 1){
+
+        joystickX /= length;
+
+        joystickY /= length;
+
+    }
+
+    dragon.x += joystickX * dragon.speed;
+
+    dragon.y += joystickY * dragon.speed;
+
+}
     // keep dragon inside canvas
 
     if(
@@ -608,7 +768,7 @@ function moveDragon(){
     dragon.y=50;
 
     message.textContent=
-    "ð¥ Hit a wall! Back to start!";
+    "🔥 Hit a wall! Back to start!";
 
 }
     }
@@ -689,13 +849,13 @@ function checkWin(){
 
 
         message.textContent=
-        "ð Dragon Victory!";
+        "🏆 Dragon Victory!";
 
 
         setTimeout(()=>{
 
             alert(
-            "ð¥ You found the treasure!"
+            "🔥 You found the treasure!"
             );
 
         },200);
@@ -885,7 +1045,7 @@ function showVictory(){
 
     screen.innerHTML=`
 
-        <h2>ð Victory!</h2>
+        <h2>🐉 Victory!</h2>
 
         <p>
         The dragon found the treasure!
@@ -940,7 +1100,7 @@ checkWin=function(){
 
 
         message.textContent=
-        "ð Dragon Victory!";
+        "🏆 Dragon Victory!";
 
 
         showVictory();
