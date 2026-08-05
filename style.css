@@ -5,6 +5,8 @@
 }
 
 body{
+    touch-action:none;
+    overscroll-behavior:none;
     background:linear-gradient(#2a0505,#4b0f0f,#120000);
     overflow:hidden;
     font-family:Arial, Helvetica, sans-serif;
@@ -159,4 +161,91 @@ canvas{
     padding:14px 30px;
     background:gold;
     color:black;
+}
+
+/* Device Selection */
+
+#deviceScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.85);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:20px;
+
+    z-index:999;
+}
+
+#deviceScreen h2{
+
+    font-size:50px;
+
+    color:gold;
+
+}
+
+#deviceScreen p{
+
+    font-size:28px;
+
+}
+
+#deviceScreen button{
+
+    width:240px;
+
+    font-size:26px;
+
+}
+
+/* Mobile Joystick */
+
+#joystick{
+
+    position:fixed;
+
+    left:25px;
+
+    bottom:25px;
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.15);
+
+    display:none;
+
+    touch-action:none;
+
+}
+
+#stick{
+
+    position:absolute;
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    background:orange;
+
+    left:45px;
+
+    top:45px;
+
 }
