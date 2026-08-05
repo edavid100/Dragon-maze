@@ -245,15 +245,13 @@ canvas.addEventListener("touchmove",(e)=>{
 
     if(!mouseDown) return;
 
-    let rect = canvas.getBoundingClientRect();
+    let rect = joystick.getBoundingClientRect();
 
-    let touch = e.touches[0];
+let touch = e.touches[0];
 
-    let scaleX = canvas.width / rect.width;
-    let scaleY = canvas.height / rect.height;
+let x = touch.clientX - rect.left;
 
-    let x = (touch.clientX - rect.left) * scaleX;
-    let y = (touch.clientY - rect.top) * scaleY;
+let y = touch.clientY - rect.top;
 
     if(erasing){
 
